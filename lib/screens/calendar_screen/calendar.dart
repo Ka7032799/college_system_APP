@@ -9,7 +9,8 @@ class Calendar extends StatefulWidget {
 
 class _CalendarState extends State<Calendar> {
   late Map<DateTime, List<Event>> selectedEvents;
-  CalendarFormat format = CalendarFormat.month;
+
+  CalendarFormat format = CalendarFormat.week;
   DateTime selectedDay = DateTime.now();
   DateTime focusedDay = DateTime.now();
 
@@ -18,6 +19,7 @@ class _CalendarState extends State<Calendar> {
   @override
   void initState() {
     selectedEvents = {};
+
     super.initState();
   }
 
@@ -35,98 +37,119 @@ class _CalendarState extends State<Calendar> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("ESTech Calendar"),
+        title: const Text("College Calendar"),
         centerTitle: true,
       ),
-      body: Column(
-        children: [
-          TableCalendar(
-            focusedDay: selectedDay,
-            firstDay: DateTime(1990),
-            lastDay: DateTime(2050),
-            calendarFormat: format,
-            onFormatChanged: (CalendarFormat _format) {
-              setState(() {
-                format = _format;
-              });
-            },
-            startingDayOfWeek: StartingDayOfWeek.sunday,
-            daysOfWeekVisible: true,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            TableCalendar(
+              focusedDay: selectedDay,
+              firstDay: DateTime(1990),
+              lastDay: DateTime(2050),
+              calendarFormat: format,
+              onFormatChanged: (CalendarFormat _format) {
+                setState(() {
+                  format = _format;
+                });
+              },
+              startingDayOfWeek: StartingDayOfWeek.saturday,
+              daysOfWeekVisible: true,
 
-            //Day Changed
-            onDaySelected: (DateTime selectDay, DateTime focusDay) {
-              setState(() {
-                selectedDay = selectDay;
-                focusedDay = focusDay;
-              });
-              print(focusedDay);
-            },
-            selectedDayPredicate: (DateTime date) {
-              return isSameDay(selectedDay, date);
-            },
+              //Day Changed
+              onDaySelected: (DateTime selectDay, DateTime focusDay) {
+                setState(() {
+                  selectedDay = selectDay;
+                  focusedDay = focusDay;
+                });
+                print(focusedDay);
+              },
+              selectedDayPredicate: (DateTime date) {
+                return isSameDay(selectedDay, date);
+              },
 
-            eventLoader: _getEventsfromDay,
+              eventLoader: _getEventsfromDay,
 
-            //To style the Calendar
-            calendarStyle: CalendarStyle(
-              isTodayHighlighted: true,
-              selectedDecoration: BoxDecoration(
-                color: Colors.blue,
-                shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.circular(5.0),
+              //To style the Calendar
+              calendarStyle: CalendarStyle(
+                isTodayHighlighted: true,
+                selectedDecoration: BoxDecoration(
+                  color: Colors.blue,
+                  shape: BoxShape.rectangle,
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+                selectedTextStyle: const TextStyle(color: Colors.white),
+                todayDecoration: BoxDecoration(
+                  color: Colors.purpleAccent,
+                  shape: BoxShape.rectangle,
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+                defaultDecoration: BoxDecoration(
+                  shape: BoxShape.rectangle,
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+                weekendDecoration: BoxDecoration(
+                  shape: BoxShape.rectangle,
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
               ),
-              selectedTextStyle: TextStyle(color: Colors.white),
-              todayDecoration: BoxDecoration(
-                color: Colors.purpleAccent,
-                shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.circular(5.0),
-              ),
-              defaultDecoration: BoxDecoration(
-                shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.circular(5.0),
-              ),
-              weekendDecoration: BoxDecoration(
-                shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.circular(5.0),
+              headerStyle: HeaderStyle(
+                formatButtonVisible: true,
+                titleCentered: true,
+                formatButtonShowsNext: false,
+                formatButtonDecoration: BoxDecoration(
+                  color: Colors.blue,
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+                formatButtonTextStyle: const TextStyle(
+                  color: Colors.white,
+                ),
               ),
             ),
-            headerStyle: HeaderStyle(
-              formatButtonVisible: true,
-              titleCentered: true,
-              formatButtonShowsNext: false,
-              formatButtonDecoration: BoxDecoration(
-                color: Colors.blue,
-                borderRadius: BorderRadius.circular(5.0),
-              ),
-              formatButtonTextStyle: TextStyle(
-                color: Colors.white,
+            ..._getEventsfromDay(selectedDay).map(
+              (Event event) => Container(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: TextButton(
+                  onPressed: () {},
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 5,
+                        height: 50,
+                        color: Colors.orange,
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        event.title,
+                        maxLines: 1,
+                        style: const TextStyle(color: Colors.black),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
-          ),
-          ..._getEventsfromDay(selectedDay).map(
-            (Event event) => ListTile(
-              title: Text(
-                event.title,
-              ),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: Text("Add Event"),
+            title: const Text("Add Event"),
             content: TextFormField(
               controller: _eventController,
             ),
             actions: [
               TextButton(
-                child: Text("Cancel"),
+                child: const Text("Cancel"),
                 onPressed: () => Navigator.pop(context),
               ),
               TextButton(
-                child: Text("Ok"),
+                child: const Text("Ok"),
                 onPressed: () {
                   if (_eventController.text.isEmpty) {
                   } else {
