@@ -1,4 +1,4 @@
-# college_s
+# college_s_APP
 
 A new Flutter project.
 
