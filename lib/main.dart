@@ -1,7 +1,7 @@
-import 'package:college_s/event.dart';
+import 'package:college_s/screens/calendar_screen/event.dart';
 import 'package:flutter/material.dart';
 
-import 'calendar.dart';
+import 'screens/calendar_screen/calendar.dart';
 
 void main() {
   runApp(MyApp());
