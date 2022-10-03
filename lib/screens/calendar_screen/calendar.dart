@@ -1,4 +1,4 @@
-import 'package:college_s/event.dart';
+import 'package:college_s/screens/calendar_screen/event.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
